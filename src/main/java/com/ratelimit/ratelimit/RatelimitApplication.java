@@ -8,6 +8,7 @@ public class RatelimitApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(RatelimitApplication.class, args);
+
   }
 
 }

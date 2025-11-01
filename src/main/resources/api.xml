@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urls>
+  <url api="/api/v1/users" method="GET" throttle="slidingwindow" limit="10" block="5m" windowsize="1m">
+  </url>
+</urls>
