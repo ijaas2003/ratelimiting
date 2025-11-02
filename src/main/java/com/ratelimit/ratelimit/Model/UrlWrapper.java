@@ -14,7 +14,6 @@ public class UrlWrapper {
   private List<Url> urls;
 
   public List<Url> getUrlList() {
-
     return urls;
   }
 
