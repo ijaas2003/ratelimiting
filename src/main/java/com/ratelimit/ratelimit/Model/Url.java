@@ -4,13 +4,17 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * Represents a URL configuration for rate limiting.
- * <p>
- * Each instance of this class corresponds to a single URL rule in the XML
- * configuration,
- * defining the API endpoint, HTTP method, rate-limiting parameters, and
- * blocking behavior.
- * </p>
+ * @author Ijaas ahamad.M
+ *         /**
+ *         /**
+ *         Represents a URL configuration for rate limiting.
+ *         <p>
+ *         Each instance of this class corresponds to a single URL rule in the
+ *         XML
+ *         configuration,
+ *         defining the API endpoint, HTTP method, rate-limiting parameters, and
+ *         blocking behavior.
+ *         </p>
  */
 @JacksonXmlRootElement(localName = "url")
 public class Url {
