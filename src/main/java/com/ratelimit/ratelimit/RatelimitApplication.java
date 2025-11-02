@@ -8,7 +8,7 @@ import com.ratelimit.ratelimit.Interceptors.Parser.XMLParser;
 @SpringBootApplication
 public class RatelimitApplication {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     SpringApplication.run(RatelimitApplication.class, args);
     new XMLParser().parse();
   }
