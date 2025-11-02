@@ -1,7 +1,30 @@
 package com.ratelimit.ratelimit.Interceptors.Parser;
 
+import java.io.File;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.ratelimit.ratelimit.Model.UrlWrapper;
+
+/**
+ * @author Ijaas Ahamad
+ * 
+ *
+ *
+ * @apiNote This class is very helpfull to
+ *          {@link ch.qos.logback.core.pattern.parser.Parser} the xml and to
+ *          store the data in {@value Redis}
+ *
+ **/
 public class XMLParser {
-  public void parse() {
+  private static final String xmlFilePath = "/Users/ijaas-22254/learn/project/ratelimit/src/main/resources/api.xml";
+
+  /**
+   * This is method whicj we are using to parse the
+   * {@link com.ratelimit.ratelimit.Interceptors.Parser.XMLParser}
+   **/
+  public void parse() throws Exception {
+    XmlMapper xmlMapper = new XmlMapper();
+    UrlWrapper urlWrapper = xmlMapper.readValue(new File(xmlFilePath), UrlWrapper.class);
 
   }
 }
