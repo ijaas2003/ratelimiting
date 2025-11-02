@@ -9,7 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JacksonXmlRootElement(localName = "urls")
 public class UrlWrapper {
 
-  @JacksonXmlProperty(localName = "urls")
+  @JacksonXmlProperty(localName = "url")
   @JacksonXmlElementWrapper(useWrapping = false)
   private List<Url> urls;
 
