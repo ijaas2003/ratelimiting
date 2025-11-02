@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urls>
-  <url api="/api/v1/users" method="GET" throttle="slidingwindow" limit="10" block="5m" windowsize="1m">
-  </url>
+  <url api="/api/v1/users" method="GET" throttle="slidingwindow" limit="10" block="5m" windowsize="1m" />
+  <url api="/api/v1/{0-9}/getUserDetails" method="GET" throttle="fixed" limit="10" block="2m" windowsize="1m"/>
 </urls>

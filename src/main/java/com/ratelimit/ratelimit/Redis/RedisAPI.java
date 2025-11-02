@@ -22,10 +22,8 @@ public interface RedisAPI {
    * @param key the Redis key to look up
    * @return an {@link Optional} containing the value if present, or an empty
    *         Optional if the key does not exist
-   * @throws Exception if any Redis communication or deserialization error occurs
-   * 
    */
-  Optional<?> get(String key) throws Exception;
+  Optional<?> get(String key);
 
   /**
    * Adds a member with a timestamp to a Redis sorted set (ZADD operation).
@@ -41,7 +39,7 @@ public interface RedisAPI {
    * @param TTL       this param stats the total time to live
    * @throws Exception if any Redis communication error occurs
    */
-  void setZADD(String key, String member, String timeStampm, String TTL) throws Exception;
+  void setZADD(String key, String member, String timeStampm, Long TTL) throws DataAlreadyFoundException, Exception;
 
   /**
    * This method is used to only for COUNTERS
@@ -49,5 +47,5 @@ public interface RedisAPI {
    * @param key This key for INCR
    * @param TTL this param stats the total time to live
    **/
-  void setINCR(String key, String TTL) throws Exception;
+  void setINCR(String key, Long TTL);
 }
