@@ -26,4 +26,8 @@ public class RedisService {
     }
     return true;
   }
+
+  public boolean updateAPIRateLimit() {
+    return true;
+  }
 }
