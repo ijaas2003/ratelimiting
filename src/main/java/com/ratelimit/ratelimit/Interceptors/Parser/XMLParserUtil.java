@@ -28,12 +28,32 @@ public class XMLParserUtil {
   public boolean validateUrl(String apiUrl, String apiMethod) {
     // USER URL : url + method
     Map<String, Object> storage = store.getStore();
-
+    String[] currentApiUrlParse = apiUrl.split("/");
     for (String url : storage.keySet()) {
       String[] urls = url.split("&");
       String[] urlMap = urls[0].split("/");
+      if (urlMap.length != currentApiUrlParse.length) {
+        continue;
+      }
+      for (int i = 0; i < currentApiUrlParse.length; i++) {
+        
+        if (!matchUrl(currentApiUrlParse[i], urlMap[i])) {
+          return false;
+        } else {
+          continue;
+        }
+      }
     }
     return true;
+  }
+
+  private boolean matchPattern(String currentApi) {
+    String xmlData = store.getDefaultXMLWildCardParams().getOrDefault(currentApi, "-1");
+    return xmlData != "-1";
+  }
+
+  private boolean matchUrl(String currentApiUrlParse, String urls) {
+    return currentApiUrlParse.equals(urls) || matchPattern(currentApiUrlParse);
   }
 
 }
