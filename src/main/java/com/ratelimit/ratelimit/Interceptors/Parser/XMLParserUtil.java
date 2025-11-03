@@ -9,12 +9,16 @@ import org.springframework.stereotype.Component;
 import com.ratelimit.ratelimit.Model.Url;
 import com.ratelimit.ratelimit.Model.UrlWrapper;
 import com.ratelimit.ratelimit.Store.Store;
+import com.ratelimit.ratelimit.Redis.*;
 
 @Component
 public class XMLParserUtil {
 
   @Autowired
   public Store store;
+
+  @Autowired
+  public RedisService redisService;
 
   public XMLParserUtil xmParserUtil;
 
@@ -29,20 +33,8 @@ public class XMLParserUtil {
     // USER URL : url + method
     Map<String, Object> storage = store.getStore();
     String[] currentApiUrlParse = apiUrl.split("/");
-    for (String url : storage.keySet()) {
-      String[] urls = url.split("&");
-      String[] urlMap = urls[0].split("/");
-      if (urlMap.length != currentApiUrlParse.length) {
-        continue;
-      }
-      for (int i = 0; i < currentApiUrlParse.length; i++) {
-        
-        if (!matchUrl(currentApiUrlParse[i], urlMap[i])) {
-          return false;
-        } else {
-          continue;
-        }
-      }
+    if (validateUrl(storage, currentApiUrlParse)) {
+      redisService.updateAPIRateLimit();
     }
     return true;
   }
@@ -56,4 +48,21 @@ public class XMLParserUtil {
     return currentApiUrlParse.equals(urls) || matchPattern(currentApiUrlParse);
   }
 
+  private boolean validateUrl(Map<String, Object> storage, String[] currentApiUrlParse) {
+    for (String url : storage.keySet()) {
+      String[] urls = url.split("&");
+      String[] urlMap = urls[0].split("/");
+      if (urlMap.length != currentApiUrlParse.length) {
+        continue;
+      }
+      for (int i = 0; i < currentApiUrlParse.length; i++) {
+        if (!matchUrl(currentApiUrlParse[i], urlMap[i])) {
+          return false;
+        } else {
+          continue;
+        }
+      }
+    }
+    return true;
+  }
 }
