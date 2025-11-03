@@ -1,7 +1,5 @@
 package com.ratelimit.ratelimit.Interceptors;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,16 +17,7 @@ public class RateLimiterInterceptor implements HandlerInterceptor {
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    boolean isValid = xmlParserUtil.validateUrl(request.getRequestURI(), request.getMethod());
-    if (!isValid) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      response.setContentType("application/json");
-      try {
-        response.getWriter().write("Access Denied");
-      } catch (IOException e) {
-        System.out.println("Exception Occured");
-      }
-    }
+    xmlParserUtil.validateUrl(request.getRequestURI(), request.getMethod());
     return true;
   }
 }
