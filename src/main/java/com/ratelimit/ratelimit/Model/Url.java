@@ -19,6 +19,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JacksonXmlRootElement(localName = "url")
 public class Url {
 
+  /** This is just unique value of {@link API} */
+  @JacksonXmlProperty(isAttribute = true)
+  public String id;
+
   /** The API endpoint path (e.g., "/api/v1/users"). */
   @JacksonXmlProperty(isAttribute = true)
   public String api;
