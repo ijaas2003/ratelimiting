@@ -23,7 +23,7 @@ public interface RedisAPI {
    * @return an {@link Optional} containing the value if present, or an empty
    *         Optional if the key does not exist
    */
-  public Optional<?> get(String key);
+  public Optional<String> get(String key);
 
   /**
    * Adds a member with a timestamp to a Redis sorted set (ZADD operation).
@@ -49,4 +49,6 @@ public interface RedisAPI {
    * @param TTL this param stats the total time to live
    **/
   public void setINCR(String key, Long TTL);
+
+  public Optional<Long> getUsingScan(String key);
 }
