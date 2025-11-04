@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ratelimit.ratelimit.Model.Url;
 import com.ratelimit.ratelimit.Model.UrlWrapper;
 import com.ratelimit.ratelimit.Model.RateLimitConstants;
+import com.ratelimit.ratelimit.ThreadLocal.*;
 
 @Service
 public class RedisService {
@@ -34,10 +35,14 @@ public class RedisService {
     String windowsize = urlPojo.windowsize;
     Pattern pattern = Pattern.compile("(\\d+)([smh]");
     Matcher matcher = pattern.matcher(urlPojo.windowsize);
-    Long time = Integer.parseInt(matcher.group(1));
+    Long time = Long.parseLong(matcher.group(1));
     if (RateLimitConstants.FIXED_WINDOW.equals(urlPojo.throttle)) {
+      String userId = UserThread.getUserId();
+      String key = userId + urlPojo.getId();
       if (redisAPI.get(key).isPresent()) {
-
+        redisAPI.setINCR(key, time);
+      } else {
+        redisAPI.setINCR(key, null);
       }
     }
     return true;
