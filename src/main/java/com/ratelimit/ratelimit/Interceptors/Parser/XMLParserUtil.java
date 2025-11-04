@@ -24,7 +24,7 @@ public class XMLParserUtil {
 
   public boolean storeURLInStore(UrlWrapper urlWrapper) {
     List<Url> urls = urlWrapper.getUrlList();
-    urls.stream().forEach(m -> store.store.put(String.format("%s&%s", m.api, m.method), m.method));
+    urls.stream().forEach(m -> store.store.put(String.format("%s&%s", m.api, m.id), m));
     System.out.println(store.store);
     return true;
   }
@@ -33,8 +33,9 @@ public class XMLParserUtil {
     // USER URL : url + method
     Map<String, Object> storage = store.getStore();
     String[] currentApiUrlParse = apiUrl.split("/");
-    if (validateUrl(storage, currentApiUrlParse)) {
-      redisService.updateAPIRateLimit();
+    Url urlPojo = (Url) validateUrl(storage, currentApiUrlParse);
+    if (urlPojo != null) {
+      redisService.updateAPIRateLimit(urlPojo);
     }
     return true;
   }
@@ -48,19 +49,26 @@ public class XMLParserUtil {
     return currentApiUrlParse.equals(urls) || matchPattern(currentApiUrlParse);
   }
 
-  private boolean validateUrl(Map<String, Object> storage, String[] currentApiUrlParse) {
+  private Object validateUrl(Map<String, Object> storage, String[] currentApiUrlParse) {
     for (String url : storage.keySet()) {
       String[] urls = url.split("&");
       String[] urlMap = urls[0].split("/");
       if (urlMap.length != currentApiUrlParse.length) {
         continue;
       }
-      for (int i = 0; i < currentApiUrlParse.length; i++) {
-        if (!matchUrl(currentApiUrlParse[i], urlMap[i])) {
-          return false;
-        } else {
-          continue;
-        }
+      if (check(currentApiUrlParse, urlMap)) {
+        return storage.get(url);
+      }
+    }
+    return null;
+  }
+
+  private boolean check(String[] currentApiUrlParse, String[] urlMap) {
+    for (int i = 0; i < currentApiUrlParse.length; i++) {
+      if (!matchUrl(currentApiUrlParse[i], urlMap[i])) {
+        return false;
+      } else {
+        continue;
       }
     }
     return true;
