@@ -52,6 +52,15 @@ public class Url {
   }
 
   /**
+   * Return the API Id
+   *
+   * @return the Api Id
+   **/
+  public String getId() {
+    return this.id;
+  }
+
+  /**
    * Returns the API endpoint for this rule.
    * 
    * @return the API path.
