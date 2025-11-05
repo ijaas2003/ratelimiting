@@ -2,6 +2,7 @@ package com.ratelimit.ratelimit.Redis;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.random.RandomGenerator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,39 +55,44 @@ public class RedisService {
       return false;
     }
     if (RateLimitConstants.FIXED_WINDOW.equals(urlPojo.throttle)) {
-      if (!handleFixedWindow(key, time)) {
+      if (!handleFixedWindow(key, time, urlPojo)) {
         blockUser(key + RateLimitConstants.BLOCKED, blockTime);
+        return false;
       }
+      return true;
     } else if (RateLimitConstants.SLIDING_WINDOW.equals(urlPojo.getThrottle())) {
-      if (!handleSlidingWindow(key, userId, urlPojo)) {
+      if (!handleSlidingWindow(key, userId, urlPojo, time)) {
         blockUser(key + RateLimitConstants.BLOCKED, blockTime);
+        return false;
       }
+      return true;
     }
     return false;
   }
 
-  private boolean handleFixedWindow(String key, Long time) {
+  private boolean handleFixedWindow(String key, Long time, Url urlPojo) {
     Optional<String> result = redisAPI.get(key);
     if (result.isEmpty()) {
       redisAPI.setINCR(key, time);
       return true;
-    } else if (Integer.parseInt(result.get()) <= time) {
+    } else if (Integer.parseInt(result.get()) < Integer.parseInt(urlPojo.getLimit())) {
       redisAPI.setINCR(key, null);
       return true;
     }
     return false;
   }
 
-  private boolean handleSlidingWindow(String key, String userId, Url urlPojo) {
+  private boolean handleSlidingWindow(String key, String userId, Url urlPojo, Long windowSize) {
     Optional<Long> result = redisAPI.getUsingScan(key);
-    if (result.get() <= Long.parseLong(urlPojo.throttle)) {
+    if (result.get() < Long.parseLong(urlPojo.limit)) {
       try {
-        redisAPI.setZADD(key, userId, urlPojo.getId(), Long.parseLong(urlPojo.getLimit()));
+        redisAPI.setZADD(key + RandomGenerator.getDefault(), userId, urlPojo.getId(), windowSize);
+        return true;
       } catch (Exception e) {
         System.out.println(e.getMessage());
       }
     }
-    return true;
+    return false;
   }
 
   private void blockUser(String key, Long block) {
@@ -95,6 +101,6 @@ public class RedisService {
 
   public boolean isUserBlocked(String key) {
     Optional<String> isBlocked = redisAPI.get(key + RateLimitConstants.BLOCKED);
-    return isBlocked.isEmpty();
+    return isBlocked.isPresent();
   }
 }

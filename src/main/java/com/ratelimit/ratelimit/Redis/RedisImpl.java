@@ -2,6 +2,7 @@ package com.ratelimit.ratelimit.Redis;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.random.RandomGenerator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +33,10 @@ public class RedisImpl implements RedisAPI {
   @Override
   public void setZADD(String key, String member, String timeStampm, Long TTL) throws Exception {
     try (Jedis jedis = jedisPool.getResource()) {
-      jedis.zadd(key, 12345.0, member);
+      Long random = RandomGenerator.getDefault().nextLong();
+      jedis.zadd(key + random, 12345.0, member);
       if (TTL != null) {
-        jedis.expire(key, TTL);
+        jedis.expire(key + random, TTL * 60);
       }
     }
   }
@@ -46,7 +48,7 @@ public class RedisImpl implements RedisAPI {
         jedis.incr(key);
       } else {
         jedis.incr(key);
-        jedis.expire(key, TTL);
+        jedis.expire(key, TTL * 60);
       }
     }
   }
@@ -56,7 +58,7 @@ public class RedisImpl implements RedisAPI {
     Long totalUsed = 0l;
     try (Jedis jedis = jedisPool.getResource()) {
       String cursor = new ScanParams().SCAN_POINTER_START;
-      ScanParams param = new ScanParams().match(key).count(10000);
+      ScanParams param = new ScanParams().match(key+"*").count(10000);
       do {
         ScanResult<String> result = jedis.scan(cursor, param);
         List<String> resultList = result.getResult();
