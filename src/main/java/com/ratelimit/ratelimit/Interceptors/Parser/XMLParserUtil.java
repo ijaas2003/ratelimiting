@@ -2,6 +2,8 @@ package com.ratelimit.ratelimit.Interceptors.Parser;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,18 +37,20 @@ public class XMLParserUtil {
     String[] currentApiUrlParse = apiUrl.split("/");
     Url urlPojo = (Url) validateUrl(storage, currentApiUrlParse);
     if (urlPojo != null) {
-      redisService.updateAPIRateLimit(urlPojo);
+      return redisService.updateAPIRateLimit(urlPojo);
     }
     return true;
   }
 
-  private boolean matchPattern(String currentApi) {
-    String xmlData = store.getDefaultXMLWildCardParams().getOrDefault(currentApi, "-1");
-    return xmlData != "-1";
+  private boolean matchPattern(String currentApi, String xmlPattern) {
+    String xmlData = store.getDefaultXMLWildCardParams().getOrDefault(xmlPattern, "-1");
+    Pattern pattern = Pattern.compile(xmlData);
+    Matcher matcher = pattern.matcher(currentApi);
+    return matcher.matches();
   }
 
   private boolean matchUrl(String currentApiUrlParse, String urls) {
-    return currentApiUrlParse.equals(urls) || matchPattern(currentApiUrlParse);
+    return currentApiUrlParse.equals(urls) || matchPattern(currentApiUrlParse,urls);
   }
 
   private Object validateUrl(Map<String, Object> storage, String[] currentApiUrlParse) {
