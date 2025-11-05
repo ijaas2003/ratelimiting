@@ -11,8 +11,12 @@ public class SecurityLayer implements WebMvcConfigurer {
   @Autowired
   private RateLimiterInterceptor rateLimiterInterceptor;
 
+  @Autowired
+  private UserInterceptor userInterceptor;
+
   @Override
   public void addInterceptors(InterceptorRegistry interceptorRegistry) {
+    interceptorRegistry.addInterceptor(userInterceptor);
     interceptorRegistry.addInterceptor(rateLimiterInterceptor);
   }
 }
