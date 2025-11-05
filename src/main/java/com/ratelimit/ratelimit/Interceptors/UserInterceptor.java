@@ -1,11 +1,13 @@
 package com.ratelimit.ratelimit.Interceptors;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.ratelimit.ratelimit.ThreadLocal.*;
 
+@Component
 public class UserInterceptor implements HandlerInterceptor {
 
   @Override
