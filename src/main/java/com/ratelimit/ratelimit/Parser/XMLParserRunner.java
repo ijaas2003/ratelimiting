@@ -1,4 +1,4 @@
-package com.ratelimit.ratelimit.Interceptors.Parser;
+package com.ratelimit.ratelimit.Parser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

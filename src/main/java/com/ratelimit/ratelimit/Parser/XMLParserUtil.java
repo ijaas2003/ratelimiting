@@ -1,4 +1,4 @@
-package com.ratelimit.ratelimit.Interceptors.Parser;
+package com.ratelimit.ratelimit.Parser;
 
 import java.util.List;
 import java.util.Map;

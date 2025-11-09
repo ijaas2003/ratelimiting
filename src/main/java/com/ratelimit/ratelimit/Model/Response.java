@@ -1,4 +1,4 @@
-package com.ratelimit.ratelimit.Interceptors;
+package com.ratelimit.ratelimit.Model;
 
 import org.json.JSONObject;
 

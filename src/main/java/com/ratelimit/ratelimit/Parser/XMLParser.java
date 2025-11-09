@@ -1,4 +1,4 @@
-package com.ratelimit.ratelimit.Interceptors.Parser;
+package com.ratelimit.ratelimit.Parser;
 
 import java.io.File;
 
@@ -25,7 +25,7 @@ public class XMLParser {
 
   /**
    * This is method whicj we are using to parse the
-   * {@link com.ratelimit.ratelimit.Interceptors.Parser.XMLParser}
+   * {@link com.ratelimit.ratelimit.Parser.XMLParser}
    **/
 
   @Autowired
