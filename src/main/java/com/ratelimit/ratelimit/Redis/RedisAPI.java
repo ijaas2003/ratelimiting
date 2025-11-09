@@ -50,5 +50,11 @@ public interface RedisAPI {
    **/
   public void setINCR(String key, Long TTL);
 
+  /**
+   * This method is used to only to search via SCAN we dont want to use GET
+   * because it became redis HALT
+   *
+   * @param key This key for {@code} Match
+   **/
   public Optional<Long> getUsingScan(String key);
 }
