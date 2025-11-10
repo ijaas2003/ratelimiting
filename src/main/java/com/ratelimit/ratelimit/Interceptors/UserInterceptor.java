@@ -16,12 +16,25 @@ import com.ratelimit.ratelimit.ThreadLocal.*;
 
 import io.micrometer.common.lang.Nullable;
 
+/**
+ * Interceptor responsible for validating the user identity from cookies.
+ * Stores user information in a ThreadLocal for downstream components.
+ */
 @Component
 public class UserInterceptor implements HandlerInterceptor {
 
+  /**
+   * Extracts user information from cookies. If absent, the request is blocked.
+   *
+   * @param request  Incoming HTTP request.
+   * @param response HTTP response used to return unauthorized errors.
+   * @param object   Handler object mapped for this request.
+   * @return true if user is authenticated; false otherwise.
+   */
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) {
     Cookie[] cookies = request.getCookies();
+
     if (cookies == null) {
       new Response(response)
           .setStatus(HttpStatus.UNAUTHORIZED.value())
@@ -30,10 +43,19 @@ public class UserInterceptor implements HandlerInterceptor {
           .sendMessage(ResponseConstants.UNAUTHORIZED);
       return false;
     }
-    UserThread.setUserId(cookies[0].getValue());
+
+    UserThread.setUserId(cookies[0].getName());
     return true;
   }
 
+  /**
+   * Clears the ThreadLocal user ID after the request completes.
+   *
+   * @param request      HTTP request.
+   * @param response     HTTP response.
+   * @param object       Handler object.
+   * @param modelAndView The model and view (nullable).
+   */
   @Override
   public void postHandle(HttpServletRequest request, HttpServletResponse response, Object object,
       @Nullable ModelAndView modelAndView) {
