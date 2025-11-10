@@ -13,15 +13,30 @@ import com.ratelimit.ratelimit.Parser.XMLParserUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Interceptor responsible for enforcing API rate limits
+ * based on URL and HTTP method validation.
+ *
+ * Requests exceeding allowed limits are blocked before reaching controllers.
+ */
 @Component
 public class RateLimiterInterceptor implements HandlerInterceptor {
 
   @Autowired
   private XMLParserUtil xmlParserUtil;
 
+  /**
+   * Validates whether the incoming request exceeds the rate limit.
+   *
+   * @param request  Incoming HTTP request.
+   * @param response HTTP response used to send error messages if blocked.
+   * @param handler  Mapped handler for the request.
+   * @return true if the request is allowed; false if rate limit exceeded.
+   */
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
     boolean rateLimitReached = xmlParserUtil.validateUrl(request.getRequestURI(), request.getMethod());
+
     if (!rateLimitReached) {
       new Response(response)
           .setStatus(HttpStatus.NOT_FOUND.value())
@@ -30,6 +45,7 @@ public class RateLimiterInterceptor implements HandlerInterceptor {
           .sendMessage(ResponseConstants.ERROR_RATE_LIMIT_EXIED);
       return false;
     }
+
     return true;
   }
 }
