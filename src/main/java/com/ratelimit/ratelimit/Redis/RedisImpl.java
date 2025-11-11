@@ -8,17 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Jedis;
-
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 
+/**
+ * Implementation of Redis operations using Jedis.
+ * Provides helper methods for basic Redis commands like GET, INCR,
+ * ZADD with expiry, and scanning keys.
+ */
 @Service
 public class RedisImpl implements RedisAPI {
 
   @Autowired
   private JedisPool jedisPool;
 
+  /**
+   * Fetches a value from Redis only if the key exists.
+   *
+   * @param key the Redis key to read
+   * @return Optional containing the value if present, else empty
+   */
   @Override
   public Optional<String> get(String key) {
     try (Jedis jedis = jedisPool.getResource()) {
@@ -30,6 +40,16 @@ public class RedisImpl implements RedisAPI {
     return Optional.empty();
   }
 
+  /**
+   * Adds a member to a Redis Sorted Set (ZADD) with a random key suffix
+   * and sets TTL if provided.
+   *
+   * @param key        base key used for ZSET
+   * @param member     element to add into sorted set
+   * @param timeStampm unused parameter (timestamp)
+   * @param TTL        expiry time in minutes; if null, no expiry is set
+   * @throws Exception if Redis operation fails
+   */
   @Override
   public void setZADD(String key, String member, String timeStampm, Long TTL) throws Exception {
     try (Jedis jedis = jedisPool.getResource()) {
@@ -41,6 +61,13 @@ public class RedisImpl implements RedisAPI {
     }
   }
 
+  /**
+   * Increments a Redis key (INCR). If the key does not exist, it creates it
+   * and sets the TTL.
+   *
+   * @param key the key to increment
+   * @param TTL expiry in minutes
+   */
   @Override
   public void setINCR(final String key, final Long TTL) {
     try (Jedis jedis = jedisPool.getResource()) {
@@ -53,12 +80,19 @@ public class RedisImpl implements RedisAPI {
     }
   }
 
+  /**
+   * Scans Redis for all keys matching a given pattern and returns the total
+   * count.
+   *
+   * @param key pattern prefix to scan for
+   * @return Optional containing number of matching keys
+   */
   @Override
   public Optional<Long> getUsingScan(final String key) {
-    Long totalUsed = 0l;
+    Long totalUsed = 0L;
     try (Jedis jedis = jedisPool.getResource()) {
       String cursor = new ScanParams().SCAN_POINTER_START;
-      ScanParams param = new ScanParams().match(key+"*").count(10000);
+      ScanParams param = new ScanParams().match(key + "*").count(10000);
       do {
         ScanResult<String> result = jedis.scan(cursor, param);
         List<String> resultList = result.getResult();
