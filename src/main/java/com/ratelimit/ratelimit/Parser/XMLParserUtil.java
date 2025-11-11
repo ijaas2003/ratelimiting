@@ -24,6 +24,12 @@ public class XMLParserUtil {
 
   public XMLParserUtil xmParserUtil;
 
+  /**
+   * Stores all URLs from the XML wrapper into the in-memory store.
+   *
+   * @param urlWrapper wrapper containing the list of URL configs
+   * @return true if stored successfully
+   */
   public boolean storeURLInStore(UrlWrapper urlWrapper) {
     List<Url> urls = urlWrapper.getUrlList();
     urls.stream().forEach(m -> store.store.put(String.format("%s&%s", m.api, m.id), m));
@@ -31,6 +37,14 @@ public class XMLParserUtil {
     return true;
   }
 
+  /**
+   * Validates whether the given API URL matches any pattern stored from XML.
+   * If matched, rate limit is updated.
+   *
+   * @param apiUrl    the incoming API URL
+   * @param apiMethod the HTTP method (currently unused)
+   * @return true if valid or updated, false if no match
+   */
   public boolean validateUrl(String apiUrl, String apiMethod) {
     // USER URL : url + method
     Map<String, Object> storage = store.getStore();
@@ -42,6 +56,13 @@ public class XMLParserUtil {
     return true;
   }
 
+  /**
+   * Matches a single URL segment against either literal text or wildcard pattern.
+   *
+   * @param currentApi the segment from the user API
+   * @param xmlPattern the segment from the XML pattern
+   * @return true if matched
+   */
   private boolean matchPattern(String currentApi, String xmlPattern) {
     String xmlData = store.getDefaultXMLWildCardParams().getOrDefault(xmlPattern, "-1");
     Pattern pattern = Pattern.compile(xmlData);
@@ -49,10 +70,20 @@ public class XMLParserUtil {
     return matcher.matches();
   }
 
+  /**
+   * Checks if a URL segment matches literal or wildcard.
+   */
   private boolean matchUrl(String currentApiUrlParse, String urls) {
-    return currentApiUrlParse.equals(urls) || matchPattern(currentApiUrlParse,urls);
+    return currentApiUrlParse.equals(urls) || matchPattern(currentApiUrlParse, urls);
   }
 
+  /**
+   * Attempts to validate the incoming URL against all stored patterns.
+   *
+   * @param storage            map of stored URLs
+   * @param currentApiUrlParse parsed incoming URL segments
+   * @return Url object if matched, else null
+   */
   private Object validateUrl(Map<String, Object> storage, String[] currentApiUrlParse) {
     for (String url : storage.keySet()) {
       String[] urls = url.split("&");
@@ -67,6 +98,9 @@ public class XMLParserUtil {
     return null;
   }
 
+  /**
+   * Compares two URL arrays and checks whether each segment matches.
+   */
   private boolean check(String[] currentApiUrlParse, String[] urlMap) {
     for (int i = 0; i < currentApiUrlParse.length; i++) {
       if (!matchUrl(currentApiUrlParse[i], urlMap[i])) {
