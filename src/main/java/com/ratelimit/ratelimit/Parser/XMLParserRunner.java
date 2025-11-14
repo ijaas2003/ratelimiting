@@ -17,11 +17,12 @@ public class XMLParserRunner implements CommandLineRunner {
   @Autowired
   private XMLParser xmlParser;
 
-  /**
+  /*
    * Executes on application startup and invokes the XML parser
    * to load and process the initial XML configuration.
    *
    * @param args command-line arguments passed during application startup
+   * 
    * @throws Exception if an error occurs while parsing XML
    */
   @Override
