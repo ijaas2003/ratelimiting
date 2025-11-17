@@ -58,7 +58,7 @@ public class RedisService {
     Matcher matcherWindow = pattern.matcher(urlPojo.getWindowsize());
     Long time = 1L;
     if (matcherWindow.matches()) {
-      time = Long.parseLong(matcherWindow.group(1));
+      time = Long.parseLong(matcherWindow.group(1)); // 2M
     }
 
     Matcher matcherBlock = pattern.matcher(urlPojo.getBlock());
