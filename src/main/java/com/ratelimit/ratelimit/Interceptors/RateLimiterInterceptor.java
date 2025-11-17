@@ -35,9 +35,9 @@ public class RateLimiterInterceptor implements HandlerInterceptor {
    */
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    boolean rateLimitReached = xmlParserUtil.validateUrl(request.getRequestURI(), request.getMethod());
+    boolean isRateLimitReached = xmlParserUtil.validateUrl(request.getRequestURI(), request.getMethod());
 
-    if (!rateLimitReached) {
+    if (!isRateLimitReached) {
       new Response(response)
           .setStatus(HttpStatus.NOT_FOUND.value())
           .setType(Type.ERROR)
