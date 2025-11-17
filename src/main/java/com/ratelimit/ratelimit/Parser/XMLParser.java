@@ -3,6 +3,7 @@ package com.ratelimit.ratelimit.Parser;
 import java.io.File;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -21,8 +22,9 @@ import com.ratelimit.ratelimit.Model.UrlWrapper;
 
 @Component
 public class XMLParser {
-  private static final String xmlFilePath = "/Users/ijaas-22254/learn/project/ratelimit/src/main/resources/api.xml";
 
+  @Value("${ratelimit.api.properties}")
+  private String xmlFilePath;
   /**
    * This is method whicj we are using to parse the
    * {@link com.ratelimit.ratelimit.Parser.XMLParser}
